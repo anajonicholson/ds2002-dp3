@@ -11,7 +11,7 @@ sqs = boto3.client('sqs', region_name='us-east-1')
 
 def delete_message(handle):
     try:
-        Delete message from SQS queue
+        #Delete message from SQS queue
         sqs.delete_message(
             QueueUrl=url,
             ReceiptHandle=handle
@@ -63,9 +63,9 @@ def main():
         phrase = reassemble_phrase(messages)
         print("Reassembled Phrase:", phrase)
 
-        # Delete messages from the queue
-        #for message in messages:
-            #delete_message(message['ReceiptHandle'])
+        #Delete messages from the queue
+        for message in messages:
+            delete_message(message['ReceiptHandle'])
 
         # Write phrase to file
         with open('phrase.txt', 'w') as f:
