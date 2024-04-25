@@ -23,29 +23,32 @@ def delete_message(handle):
 def get_messages():
     messages = []
     try:
-        # Receive messages from SQS queue.
-        response = sqs.receive_message(
-            QueueUrl=url,
-            AttributeNames=[
-                'All'
-            ],
-            MaxNumberOfMessages=10,  # Receive up to 10 messages at once
-            MessageAttributeNames=[
-                'All'
-            ]
-        )
-        # Check if there are messages in the queue
-        if "Messages" in response:
-            for message in response['Messages']:
-                order = message['MessageAttributes']['order']['StringValue']
-                word = message['MessageAttributes']['word']['StringValue']
-                handle = message['ReceiptHandle']
-                messages.append({'order': order, 'word': word, 'ReceiptHandle': handle})
-        else:
-            print("No messages in the queue")
+        while True:
+            # Receive messages from SQS queue.
+            response = sqs.receive_message(
+                QueueUrl=url,
+                AttributeNames=[
+                    'All'
+                ],
+                MaxNumberOfMessages=10,  # Receive up to 10 messages at once
+                MessageAttributeNames=[
+                    'All'
+                ]
+            )
+            # Check if there are messages in the queue
+            if "Messages" in response:
+                for message in response['Messages']:
+                    order = message['MessageAttributes']['order']['StringValue']
+                    word = message['MessageAttributes']['word']['StringValue']
+                    handle = message['ReceiptHandle']
+                    messages.append({'order': order, 'word': word, 'ReceiptHandle': handle})
+            else:
+                print("No more messages in the queue")
+                break  # Exit the loop if there are no more messages
     except ClientError as e:
         print(e.response['Error']['Message'])
     return messages
+
 
 def reassemble_phrase(messages):
     ordered_messages = sorted(messages, key=lambda x: int(x['order']))
