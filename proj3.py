@@ -6,12 +6,12 @@ import requests
 import json
 
 # Set up your SQS queue URL and boto3 client
-url = "https://sqs.us-east-1.amazonaws.com/440848399208/tvy6kv"
+url = "https://sqs.us-east-1.amazonaws.com/440848399208/fhy9gs"
 sqs = boto3.client('sqs', region_name='us-east-1')  
 
 def delete_message(handle):
     try:
-        # Delete message from SQS queue
+        Delete message from SQS queue
         sqs.delete_message(
             QueueUrl=url,
             ReceiptHandle=handle
